@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .iphone {
+    width: 390px;
+    height: 844px;
+    background: #fff;
+    border-radius: 44px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #333, 0 20px 60px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 34px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 54px;
+    background: #f6f6f6;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 28px 6px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .status-time { font-size: 15px; font-weight: 700; }
+  .status-icons { display: flex; gap: 5px; align-items: center; font-size: 13px; }
+
+  /* Nav bar */
+  .nav-bar {
+    background: #f6f6f6;
+    padding: 8px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 0.5px solid #c6c6c8;
+  }
+  .nav-back {
+    color: #007aff;
+    font-size: 17px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .nav-back svg { width: 22px; height: 22px; fill: #007aff; }
+  .nav-contact {
+    flex: 1;
+    text-align: center;
+  }
+  .nav-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #c7c7cc;
+    margin: 0 auto 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-avatar svg { width: 20px; height: 20px; fill: #8e8e93; }
+  .nav-name {
+    font-size: 11px;
+    color: #000;
+    font-weight: 600;
+  }
+  .nav-phone {
+    font-size: 10px;
+    color: #8e8e93;
+  }
+  .nav-right {
+    width: 44px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .nav-right svg { width: 22px; height: 22px; fill: #007aff; }
+
+  /* Messages area */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .messages::-webkit-scrollbar { display: none; }
+
+  .msg-row {
+    display: flex;
+    max-width: 78%;
+  }
+  .msg-row.them { align-self: flex-start; }
+  .msg-row.me { align-self: flex-end; }
+
+  .bubble {
+    padding: 8px 14px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.35;
+    word-wrap: break-word;
+  }
+  .msg-row.them .bubble {
+    background: #e9e9eb;
+    color: #000;
+    border-bottom-left-radius: 6px;
+  }
+  .msg-row.me .bubble {
+    background: #007aff;
+    color: #fff;
+    border-bottom-right-radius: 6px;
+  }
+
+  .timestamp {
+    text-align: center;
+    font-size: 11px;
+    color: #8e8e93;
+    padding: 8px 0 4px;
+  }
+
+  .typing-indicator {
+    align-self: flex-start;
+    display: none;
+    padding: 0 4px;
+  }
+  .typing-indicator .bubble {
+    background: #e9e9eb;
+    border-bottom-left-radius: 6px;
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+    align-items: center;
+  }
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #b0b0b3;
+    animation: typingBounce 1.4s infinite ease-in-out;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* Input bar */
+  .input-bar {
+    background: #f6f6f6;
+    padding: 8px 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-top: 0.5px solid #c6c6c8;
+  }
+  .input-plus {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e9e9eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: default;
+  }
+  .input-plus svg { width: 18px; height: 18px; fill: #8e8e93; }
+  .input-field {
+    flex: 1;
+    border: 1px solid #c6c6c8;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    background: #fff;
+  }
+  .input-field::placeholder { color: #b0b0b3; }
+  .send-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #007aff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+  .send-btn.active { opacity: 1; }
+  .send-btn svg { width: 18px; height: 18px; fill: #fff; margin-left: -1px; }
+
+  /* Home indicator */
+  .home-bar {
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f6f6f6;
+  }
+  .home-indicator {
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: #000;
+    opacity: 0.2;
+  }
+</style>
+</head>
+<body>
+
+<div class="iphone">
+  <div class="notch"></div>
+
+  <div class="status-bar">
+    <span class="status-time">11:42</span>
+    <span class="status-icons">
+      <svg width="16" height="12" viewBox="0 0 16 12"><rect x="0" y="5" width="3" height="7" rx="0.5" fill="#000"/><rect x="4.5" y="3.5" width="3" height="8.5" rx="0.5" fill="#000"/><rect x="9" y="1.5" width="3" height="10.5" rx="0.5" fill="#000"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="#000" opacity="0.3"/></svg>
+      <svg width="16" height="12" viewBox="0 0 25 12"><rect x="0" y="0.5" width="22" height="11" rx="2" stroke="#000" stroke-width="1" fill="none"/><rect x="23" y="3.5" width="2" height="5" rx="0.5" fill="#000" opacity="0.4"/><rect x="1.5" y="2" width="14" height="8" rx="1" fill="#000"/></svg>
+    </span>
+  </div>
+
+  <div class="nav-bar">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </div>
+    <div class="nav-contact">
+      <div class="nav-avatar">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="nav-name">(903) 555-0147</div>
+    </div>
+    <div class="nav-right">
+      <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+    </div>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="timestamp">Today 11:38 AM</div>
+
+    <div class="msg-row them">
+      <div class="bubble">Hey Jonathan! I should be there shortly, can't wait to see you 😊</div>
+    </div>
+
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="bubble">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-plus">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    </div>
+    <input type="text" class="input-field" id="inputField" placeholder="Text Message">
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+
+  <div class="home-bar"><div class="home-indicator"></div></div>
+</div>
+
+<script>
+  const messagesEl = document.getElementById('messages');
+  const inputField = document.getElementById('inputField');
+  const sendBtn = document.getElementById('sendBtn');
+  const typingIndicator = document.getElementById('typingIndicator');
+
+  // Keep send button style in sync
+  inputField.addEventListener('input', () => {
+    sendBtn.classList.toggle('active', inputField.value.trim().length > 0);
+  });
+
+  inputField.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && inputField.value.trim()) sendMessage();
+  });
+
+  function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function sendMessage() {
+    const text = inputField.value.trim();
+    if (!text) return;
+
+    const row = document.createElement('div');
+    row.className = 'msg-row me';
+    row.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+    messagesEl.insertBefore(row, typingIndicator);
+    inputField.value = '';
+    sendBtn.classList.remove('active');
+    scrollToBottom();
+  }
+
+  // Call this from console to have the "scammer" reply
+  // e.g. reply("Oh sorry! Wrong number lol. How are you though?")
+  window.reply = function(text, delay = 1500) {
+    typingIndicator.style.display = 'block';
+    scrollToBottom();
+    setTimeout(() => {
+      typingIndicator.style.display = 'none';
+      const row = document.createElement('div');
+      row.className = 'msg-row them';
+      row.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+      messagesEl.insertBefore(row, typingIndicator);
+      scrollToBottom();
+    }, delay);
+  };
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  scrollToBottom();
+</script>
+</body>
+</html>

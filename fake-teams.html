@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Teams - Driver Required</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background: #f5f5f5;
+    color: #242424;
+  }
+
+  /* MS-style top bar */
+  .topbar {
+    background: #6264a7;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+  }
+  .topbar svg { width: 24px; height: 24px; fill: #fff; }
+  .topbar-title {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .topbar-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar-icon svg { width: 16px; height: 16px; }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #4f52b2;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Sidebar */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 48px);
+  }
+  .sidebar {
+    width: 68px;
+    background: #ebebeb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 4px;
+  }
+  .sidebar-item {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #616161;
+    cursor: default;
+    gap: 2px;
+  }
+  .sidebar-item svg { width: 20px; height: 20px; fill: #616161; }
+  .sidebar-item.active {
+    background: #fff;
+    color: #6264a7;
+  }
+  .sidebar-item.active svg { fill: #6264a7; }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+
+  /* Error/driver modal */
+  .driver-modal {
+    text-align: center;
+    max-width: 480px;
+    padding: 48px 40px;
+  }
+  .warning-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #fff4ce;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+  .warning-icon svg {
+    width: 40px;
+    height: 40px;
+    fill: #d4880f;
+  }
+  .driver-modal h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #242424;
+  }
+  .driver-modal .error-code {
+    font-size: 12px;
+    color: #999;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 16px;
+  }
+  .driver-modal p {
+    font-size: 14px;
+    color: #616161;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .driver-modal .steps {
+    text-align: left;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.8;
+  }
+  .driver-modal .steps strong {
+    color: #242424;
+  }
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 32px;
+    background: #6264a7;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .download-btn:hover { background: #4f52b2; }
+  .download-btn svg { width: 18px; height: 18px; fill: #fff; }
+  .skip-link {
+    display: block;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #999;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .file-info {
+    font-size: 11px;
+    color: #bbb;
+    margin-top: 8px;
+  }
+
+  /* Toast notification for "download" */
+  .toast {
+    position: fixed;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #242424;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: bottom 0.4s ease;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .toast.show { bottom: 32px; }
+  .toast svg { width: 18px; height: 18px; fill: #4caf50; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <svg viewBox="0 0 24 24"><path d="M19.19 8.77q.46 0 .86.17.39.17.69.47.29.3.46.69.17.4.17.86v4.17q0 .72-.27 1.36-.27.63-.75 1.1-.47.49-1.11.76-.64.28-1.37.28h-.69q-.05.83-.37 1.56-.31.73-.82 1.27-.51.55-1.2.88-.68.33-1.47.37v.01h-5.4q-.95 0-1.79-.36-.83-.36-1.45-.99-.63-.63-.99-1.45-.36-.83-.36-1.79V8.77h5.17v7.28q0 .26.1.49t.27.41q.17.17.4.27.24.1.5.1h.01q.26 0 .49-.1.23-.1.4-.27.18-.18.28-.41.1-.23.1-.49V5.96q0-.26.1-.49.1-.23.27-.4.17-.18.4-.28.24-.1.5-.1h.01q.26 0 .49.1.23.1.4.28.18.17.28.4.1.23.1.49v2.81h4.08zM14.94 3.68q0 .55-.21 1.04-.21.48-.58.84-.36.36-.85.57-.49.21-1.04.21-.56 0-1.04-.21-.49-.21-.85-.57-.37-.36-.57-.84-.21-.49-.21-1.04 0-.56.21-1.05.2-.48.57-.85.36-.36.85-.57.48-.21 1.04-.21.55 0 1.04.21.49.21.85.57.37.37.58.85.21.49.21 1.05zm5.07 2.38q0 .44-.17.82-.17.39-.46.68-.3.28-.68.45-.39.17-.83.17-.43 0-.82-.17-.38-.17-.68-.45-.28-.29-.45-.68-.17-.38-.17-.82 0-.44.17-.83.17-.39.45-.68.3-.28.68-.45.39-.17.82-.17.44 0 .83.17.38.17.68.45.29.29.46.68.17.39.17.83z"/></svg>
+  <span class="topbar-title">Microsoft Teams</span>
+  <div class="topbar-right">
+    <div class="topbar-icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34A6.505 6.505 0 003.03 10c.01 2.17 1.07 4.09 2.71 5.27l-.27.27H4.5l-4 4h3v3h3v3h4l3.01-3.01c.97.62 2.12.98 3.35.98 3.58 0 6.49-2.91 6.49-6.5S19.08 7.5 15.5 7.5zm0 10c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" fill="#fff"/></svg></div>
+    <div class="topbar-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="#fff"/></svg></div>
+    <div class="avatar">MJ</div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-item active">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      <span>Chat</span>
+    </div>
+    <div class="sidebar-item">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      <span>Teams</span>
+    </div>
+    <div class="sidebar-item">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      <span>Calendar</span>
+    </div>
+    <div class="sidebar-item">
+      <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      <span>Calls</span>
+    </div>
+  </div>
+
+  <!-- Main content: driver warning -->
+  <div class="main">
+    <div class="driver-modal">
+      <div class="warning-icon">
+        <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+      </div>
+      <h1>Audio/Video Driver Not Found</h1>
+      <div class="error-code">Error 0x80070032 — TEAMS_AV_DRIVER_MISSING</div>
+      <p>Microsoft Teams requires an updated audio/video driver to join calls and meetings. Your current driver is missing or out of date.</p>
+      <div class="steps">
+        <strong>To fix this issue:</strong><br>
+        1. Click "Download Driver" below<br>
+        2. Open the downloaded file<br>
+        3. Follow the installation prompts<br>
+        4. Restart Microsoft Teams
+      </div>
+      <button class="download-btn" onclick="fakeDownload()">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Driver
+      </button>
+      <div class="file-info">TeamsAVDriver_v4.2.1_x64.dmg — 3.8 MB</div>
+      <a class="skip-link" href="https://teams.microsoft.com" target="_blank">Remind me later</a>
+    </div>
+  </div>
+</div>
+
+<!-- Download toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  TeamsAVDriver_v4.2.1_x64.dmg downloaded
+</div>
+
+<script>
+  function fakeDownload() {
+    // Create a tiny empty file and trigger a download
+    const blob = new Blob(['This is a demo file. It does nothing.'], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'TeamsAVDriver_v4.2.1_x64.dmg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Show toast then redirect to real Teams
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => {
+      window.location.href = 'https://teams.microsoft.com';
+    }, 1500);
+  }
+</script>
+</body>
+</html>
