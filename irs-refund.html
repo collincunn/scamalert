@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRS Refund Verification</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1b1b1b;
+    background: #fff;
+    min-height: 100vh;
+  }
+  .usa-banner {
+    background: #eee;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding: 0 12%;
+    font-size: 16px;
+    color: #222;
+  }
+  .flag {
+    width: 18px;
+    height: 12px;
+    margin-right: 8px;
+    background:
+      linear-gradient(#b22234 0 14%, #fff 14% 28%, #b22234 28% 42%, #fff 42% 56%, #b22234 56% 70%, #fff 70% 84%, #b22234 84% 100%);
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+  }
+  .flag::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 7px;
+    background: #3c3b6e;
+  }
+  .usa-banner a {
+    color: #005ea8;
+    margin-left: 8px;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  .masthead {
+    background: #005ea8;
+    color: #fff;
+  }
+  .masthead-inner {
+    max-width: 1720px;
+    margin: 0 auto;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12%;
+  }
+  .irs-logo {
+    width: 156px;
+    height: auto;
+    display: block;
+  }
+  .top-links {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .top-links span {
+    padding-right: 26px;
+    border-right: 2px solid rgba(255,255,255,0.7);
+  }
+  .top-links span:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
+  .nav-bar {
+    background: #003e73;
+    color: #fff;
+  }
+  .nav-inner {
+    max-width: 1720px;
+    margin: 0 auto;
+    height: 76px;
+    padding: 0 12%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 52px;
+    font-size: 22px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .search {
+    width: 380px;
+    height: 38px;
+    background: #fff;
+    color: #4b5563;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 13px;
+    font-size: 22px;
+    box-shadow: inset 0 0 0 1px #b7b7b7;
+  }
+  .info-strip {
+    max-width: 1660px;
+    margin: 18px auto 0;
+    padding: 0 12%;
+  }
+  .info-box {
+    background: #e5f6f8;
+    border-left: 12px solid #0089a6;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 23px;
+  }
+  .info-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 30px;
+    font-weight: 800;
+    flex: 0 0 auto;
+  }
+  .page {
+    max-width: 1660px;
+    margin: 76px auto 0;
+    padding: 0 12% 54px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 510px;
+    gap: 72px;
+    align-items: start;
+  }
+  .hero h1 {
+    font-size: 64px;
+    line-height: 1.18;
+    margin-bottom: 30px;
+    letter-spacing: -0.02em;
+  }
+  .hero-copy {
+    font-size: 28px;
+    line-height: 1.55;
+    max-width: 700px;
+    margin-bottom: 42px;
+  }
+  .bullets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 24px 48px;
+    max-width: 610px;
+    margin-bottom: 38px;
+  }
+  .bullet {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .check {
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #1b1b1b;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+  }
+  .primary-link {
+    display: inline-block;
+    background: #005ea8;
+    color: #fff;
+    border-radius: 4px;
+    padding: 15px 28px;
+    font-size: 20px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .form-card {
+    border: 1px solid #d6d7d9;
+    border-radius: 8px;
+    background: #fff;
+    padding: 28px 32px 34px;
+  }
+  .form-card h2 {
+    font-size: 31px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .form-card p {
+    font-size: 17px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .notice {
+    background: #e5f6f8;
+    border-left: 6px solid #0089a6;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  label {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  input {
+    width: 100%;
+    border: 1px solid #8a8f94;
+    border-radius: 2px;
+    padding: 10px 11px;
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .button {
+    width: 100%;
+    border: 3px solid #005ea8;
+    border-radius: 4px;
+    background: #fff;
+    color: #005ea8;
+    padding: 13px 16px;
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 8px;
+    cursor: pointer;
+  }
+  .status-block {
+    margin-top: 34px;
+    border-top: 1px solid #d6d7d9;
+    padding-top: 24px;
+  }
+  .status-block h3 {
+    font-size: 23px;
+    margin-bottom: 10px;
+  }
+  .status-block p {
+    font-size: 17px;
+    margin-bottom: 0;
+  }
+  .success {
+    padding: 32px 8px 18px;
+    text-align: center;
+  }
+  .success-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #dff4e7;
+    color: #2e7044;
+    display: grid;
+    place-items: center;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 auto 18px;
+  }
+  .success h2 {
+    font-size: 27px;
+    margin-bottom: 12px;
+  }
+  .success p {
+    font-size: 17px;
+    margin: 0 auto 12px;
+    max-width: 430px;
+  }
+  .footer {
+    max-width: 1660px;
+    margin: 0 auto 30px;
+    padding: 0 12%;
+    color: #555;
+    font-size: 13px;
+  }
+  @media (max-width: 1050px) {
+    .usa-banner,
+    .masthead-inner,
+    .nav-inner,
+    .info-strip,
+    .page,
+    .footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .page { grid-template-columns: 1fr; }
+    .search { display: none; }
+  }
+  @media (max-width: 700px) {
+    .top-links,
+    .nav-links { display: none; }
+    .masthead-inner { height: 88px; }
+    .irs-logo { width: 120px; }
+    .hero h1 { font-size: 42px; }
+    .hero-copy { font-size: 22px; }
+    .bullets { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="usa-banner">
+  <div class="flag" aria-hidden="true"></div>
+  <span>An official website of the United States government</span>
+  <a href="#">Here's how you know⌄</a>
+</div>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <img class="irs-logo" src="IRS-Logo.svg" alt="IRS">
+    <div class="top-links">
+      <span>Help</span>
+      <span>News</span>
+      <span>English⌄</span>
+      <span>Tax Pros</span>
+      <span>Sign in⌄</span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <div class="nav-links">
+      <span>File</span>
+      <span>Pay</span>
+      <span>Refunds</span>
+      <span>Credits &amp; Deductions</span>
+      <span>Forms</span>
+      <span>Report Fraud</span>
+    </div>
+    <div class="search">
+      <span>Search</span>
+      <span>⌕</span>
+    </div>
+  </div>
+</nav>
+
+<div class="info-strip">
+  <div class="info-box">
+    <div class="info-icon">i</div>
+    <div><strong>IRS Free File</strong> is open until Oct. 15th. Explore your free filing options. <u>E-file your taxes for free.</u></div>
+  </div>
+</div>
+
+<main class="page">
+  <section class="hero">
+    <h1>Do more with an<br>IRS account</h1>
+    <p class="hero-copy">Access your tax information with an Individual, Business or Tax Pro Account</p>
+
+    <div class="bullets">
+      <div class="bullet"><span class="check">✓</span><span>Refund status</span></div>
+      <div class="bullet"><span class="check">✓</span><span>Tax records</span></div>
+      <div class="bullet"><span class="check">✓</span><span>Payments</span></div>
+      <div class="bullet"><span class="check">✓</span><span>Notifications</span></div>
+    </div>
+
+    <a class="primary-link" href="#">Create account</a>
+  </section>
+
+  <aside class="form-card">
+    <h2>Where's my refund?</h2>
+    <p><strong>Refund tracker</strong><br>Enter your SSN, filing status and refund amount on your return. No sign in.</p>
+
+    <form id="refundForm">
+      <div class="notice">Reference ID IRS-RFD-48291-26 is awaiting taxpayer verification.</div>
+
+      <label for="name">Full legal name</label>
+      <input id="name" type="text" placeholder="Enter full name">
+
+      <div class="grid">
+        <div>
+          <label for="ssn">Social Security number</label>
+          <input id="ssn" type="text" placeholder="XXX-XX-XXXX">
+        </div>
+        <div>
+          <label for="dob">Date of birth</label>
+          <input id="dob" type="text" placeholder="MM/DD/YYYY">
+        </div>
+      </div>
+
+      <label for="bank">Bank account number</label>
+      <input id="bank" type="text" placeholder="Enter account number">
+
+      <label for="routing">Routing number</label>
+      <input id="routing" type="text" placeholder="Enter routing number">
+
+      <button class="button" type="submit">Use refund tracker</button>
+    </form>
+
+    <div class="status-block">
+      <h3>Refund Status</h3>
+      <p>Refund amount: <strong>$1,482.60</strong><br>Current status: <strong>Pending verification</strong></p>
+    </div>
+  </aside>
+</main>
+
+<footer class="footer">
+  Demo training page. Do not enter real personal or financial information.
+</footer>
+
+<script>
+  document.getElementById('refundForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    this.innerHTML = `
+      <div class="success">
+        <div class="success-icon">✓</div>
+        <h2>Thank you. Your refund has been verified.</h2>
+        <p>Your refund destination has been confirmed. Funds will be released after final processing.</p>
+        <p>Reference ID: IRS-RFD-48291-26</p>
+      </div>
+    `;
+  });
+</script>
+</body>
+</html>

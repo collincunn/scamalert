@@ -1,0 +1,10 @@
+# ScamAlert talk-only host overrides.
+# Add these lines to /etc/hosts on the presentation laptop.
+#
+# These names resolve only on machines where this file has been installed.
+127.0.0.1 xfinitysupport.com
+127.0.0.1 www.xfinitysupport.com
+127.0.0.1 safebank.com
+127.0.0.1 www.safebank.com
+127.0.0.1 irs-refund.com
+127.0.0.1 www.irs-refund.com

@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "ScamAlert Talk Demos",
+  "version": "1.0.0",
+  "description": "Local browser overlays and search-result injections for scam-awareness demos.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/search*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://natashaskitchen.com/quick-creme-brulee-recipe*",
+        "https://www.natashaskitchen.com/quick-creme-brulee-recipe*"
+      ],
+      "js": [
+        "recipe-popup.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://mail.google.com/mail/*"
+      ],
+      "js": [
+        "gmail-from-demo.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

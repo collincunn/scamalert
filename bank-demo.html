@@ -352,5 +352,99 @@
   </table>
 </div>
 
+<script>
+  (function() {
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+    let currentCheckingBalance = 4285.63;
+
+    function formatMoney(value) {
+      const sign = value < 0 ? '-' : '';
+      return sign + '$' + Math.abs(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function checkingBalanceElements() {
+      const balanceEl = document.getElementById('checkingBalance');
+      const availableEl = balanceEl.parentElement.querySelector('.account-available');
+      return { balanceEl, availableEl };
+    }
+
+    async function animateCheckingBalance(endBalance, color) {
+      const { balanceEl, availableEl } = checkingBalanceElements();
+      const startBalance = currentCheckingBalance;
+      const steps = 40;
+      const stepTime = 25;
+
+      for (let i = 1; i <= steps; i++) {
+        const current = startBalance + ((endBalance - startBalance) * (i / steps));
+        balanceEl.textContent = formatMoney(current);
+        balanceEl.style.color = color;
+        await sleep(stepTime);
+      }
+
+      currentCheckingBalance = endBalance;
+      balanceEl.textContent = formatMoney(endBalance);
+      availableEl.textContent = 'Available: ' + formatMoney(endBalance);
+      availableEl.style.color = color;
+    }
+
+    async function addTransaction({ date, description, category, status, amount, balance, color, background }) {
+      const fakeRow = document.createElement('tr');
+      fakeRow.innerHTML = `
+        <td class="txn-date" style="color:${color};font-weight:600">${date}</td>
+        <td>
+          <div class="txn-desc" style="color:${color};font-weight:700">${description}</div>
+          <div class="txn-category">${category}</div>
+        </td>
+        <td><span class="txn-status status-pending">${status}</span></td>
+        <td class="txn-amount" style="color:${color};font-size:15px;font-weight:800;text-align:right">${amount}</td>
+        <td class="txn-balance">${balance}</td>
+      `;
+      fakeRow.style.opacity = '0';
+      fakeRow.style.transition = 'opacity 0.6s ease-in';
+      fakeRow.style.background = background;
+
+      const tbody = document.querySelector('.txn-table tbody');
+      tbody.insertBefore(fakeRow, tbody.firstChild);
+
+      await sleep(100);
+      fakeRow.style.opacity = '1';
+      await sleep(700);
+    }
+
+    window.removeMoney = async function() {
+      await addTransaction({
+        date: 'May 11',
+        description: 'EXT TRANSFER - UNKNOWN RECIPIENT',
+        category: 'Possible unauthorized transfer',
+        status: 'Pending',
+        amount: '-$200.00',
+        balance: '$4,085.63',
+        color: '#d93025',
+        background: '#fff5f5'
+      });
+      await animateCheckingBalance(4085.63, '#d93025');
+    };
+
+    window.addMoney = async function() {
+      await addTransaction({
+        date: 'May 11',
+        description: 'REFUND CREDIT - SUPPORT REVERSAL',
+        category: 'Refund correction',
+        status: 'Pending',
+        amount: '+$2,000.00',
+        balance: '$6,085.63',
+        color: '#137333',
+        background: '#f0fff4'
+      });
+      await animateCheckingBalance(6085.63, '#137333');
+    };
+
+    window.rM = window.removeMoney;
+    window.aM = window.addMoney;
+  })();
+</script>
 </body>
 </html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xfinity Support</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f6f6f7;
+    color: #1f1f24;
+    min-height: 100vh;
+  }
+  .topbar {
+    height: 68px;
+    background: #fff;
+    border-bottom: 1px solid #e4e4e7;
+    display: flex;
+    align-items: center;
+    padding: 0 38px;
+    gap: 34px;
+  }
+  .brand {
+    color: #5f259f;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+  }
+  .nav {
+    display: flex;
+    gap: 26px;
+    flex: 1;
+    color: #4f4e57;
+    font-size: 14px;
+  }
+  .nav span { white-space: nowrap; }
+  .signin {
+    border: 1px solid #5f259f;
+    border-radius: 22px;
+    color: #5f259f;
+    background: #fff;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .hero {
+    background: linear-gradient(135deg, #3b1278 0%, #6120a8 52%, #7a32d8 100%);
+    color: #fff;
+    padding: 58px 38px 72px;
+  }
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .eyebrow {
+    color: #ddccff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 46px;
+    line-height: 1.08;
+    max-width: 620px;
+    margin-bottom: 18px;
+  }
+  .hero-copy {
+    color: #f2eaff;
+    font-size: 18px;
+    line-height: 1.55;
+    max-width: 610px;
+  }
+  .call-card {
+    background: #fff;
+    color: #24232a;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 18px 44px rgba(14, 5, 37, 0.3);
+  }
+  .call-card h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .call-card p {
+    color: #5b5963;
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+  .phone-box {
+    background: #fbf8ff;
+    border: 1px solid #ded3f0;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .phone-label {
+    color: #696474;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .phone-number {
+    color: #5f259f;
+    font-size: 36px;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .call-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #5f259f;
+    color: #fff;
+    border-radius: 8px;
+    padding: 15px 20px;
+    font-size: 17px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .hours {
+    color: #74717d;
+    font-size: 13px;
+    margin-top: 13px;
+    line-height: 1.45;
+  }
+  .content {
+    max-width: 1100px;
+    margin: -36px auto 0;
+    padding: 0 38px 42px;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .tile {
+    background: #fff;
+    border: 1px solid #e7e5ec;
+    border-radius: 8px;
+    padding: 22px;
+    min-height: 140px;
+    box-shadow: 0 8px 22px rgba(26, 18, 44, 0.08);
+  }
+  .icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #f1e9ff;
+    color: #5f259f;
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+  .tile h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  .tile p {
+    color: #66636e;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .status {
+    background: #fff;
+    border: 1px solid #e7e5ec;
+    border-radius: 8px;
+    margin-top: 18px;
+    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    gap: 22px;
+    align-items: center;
+  }
+  .status h2 {
+    font-size: 20px;
+    margin-bottom: 7px;
+  }
+  .status p {
+    color: #5f5c66;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .status-pill {
+    background: #e9f7ef;
+    color: #137333;
+    border-radius: 18px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  @media (max-width: 860px) {
+    .nav { display: none; }
+    .topbar { padding: 0 22px; }
+    .hero { padding: 42px 22px 48px; }
+    .hero-inner { grid-template-columns: 1fr; }
+    h1 { font-size: 34px; }
+    .content { margin-top: 22px; padding: 0 22px 32px; }
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .status { align-items: flex-start; flex-direction: column; }
+  }
+  @media (max-width: 560px) {
+    .tiles { grid-template-columns: 1fr; }
+    .phone-number { font-size: 29px; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">xfinity</div>
+  <nav class="nav">
+    <span>Internet</span>
+    <span>Mobile</span>
+    <span>TV &amp; Streaming</span>
+    <span>Support</span>
+  </nav>
+  <button class="signin">Sign In</button>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow">Xfinity Customer Support</div>
+      <h1>Need help with your internet, billing, or account?</h1>
+      <p class="hero-copy">Our support specialists can help with service interruptions, modem issues, billing questions, and account access.</p>
+    </div>
+
+    <aside class="call-card">
+      <h2>Call us for support</h2>
+      <p>For faster service, call the support desk and have your account phone number ready.</p>
+      <div class="phone-box">
+        <div class="phone-label">Support phone number</div>
+        <div class="phone-number">770-757-9405</div>
+      </div>
+      <a class="call-button" href="#">Call Support</a>
+      <div class="hours">Available 24/7 for internet, billing, and account support.</div>
+    </aside>
+  </div>
+</section>
+
+<main class="content">
+  <section class="tiles">
+    <article class="tile">
+      <div class="icon">!</div>
+      <h3>Outage help</h3>
+      <p>Check for local service interruptions and restoration updates.</p>
+    </article>
+    <article class="tile">
+      <div class="icon">$</div>
+      <h3>Billing support</h3>
+      <p>Get help understanding charges, payments, and account notices.</p>
+    </article>
+    <article class="tile">
+      <div class="icon">W</div>
+      <h3>WiFi support</h3>
+      <p>Troubleshoot modem, router, and home network issues.</p>
+    </article>
+    <article class="tile">
+      <div class="icon">A</div>
+      <h3>Account access</h3>
+      <p>Recover access to your account and update your security settings.</p>
+    </article>
+  </section>
+
+  <section class="status">
+    <div>
+      <h2>Support center status</h2>
+      <p>Phone support is currently available. Call the number above to speak with a representative.</p>
+    </div>
+    <div class="status-pill">Agents available</div>
+  </section>
+</main>
+</body>
+</html>

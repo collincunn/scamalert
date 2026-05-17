@@ -1,0 +1,4 @@
+.talk-server.log
+.talk-server.pid
+.pycache/
+__pycache__/
